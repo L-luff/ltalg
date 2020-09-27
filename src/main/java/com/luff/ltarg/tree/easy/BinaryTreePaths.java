@@ -37,22 +37,74 @@ public class BinaryTreePaths {
      */
     public List<String> binaryTreePaths(TreeNode root) {
         List<String> res=new ArrayList<>();
-        recursive(res,root,"");
+        recursive(res,root,new StringBuilder());
         return res;
     }
 
-    public void recursive(List<String> res,TreeNode node,String prefix){
+    // 修改为stringbuilder
+//    public void recursive(List<String> res,TreeNode node,String prefix){
+//        if(node==null) return;
+//        if(node.left==null && node.right==null){
+//            res.add(prefix+node.val);
+//            return;
+//        }
+//        String next=new StringBuilder(prefix).append(node.val).append("->").toString();
+//        recursive(res,node.left,next);
+//        recursive(res,node.right,next);
+//    }
+    public void recursive(List<String> res,TreeNode node,StringBuilder prefix){
         if(node==null) return;
         if(node.left==null && node.right==null){
-            res.add(prefix+node.val);
+            res.add(prefix.append(node.val).toString());
             return;
         }
-        String next=new StringBuilder(prefix).append(node.val).append("->").toString();
-        recursive(res,node.left,next);
-        recursive(res,node.right,next);
+        prefix.append(node.val).append("->");
+        recursive(res,node.left,new StringBuilder(prefix));
+        recursive(res,node.right,new StringBuilder(prefix));
     }
 
-    public void iterator(List<String> res,TreeNode node){
 
+    public void iterator(List<String> res,TreeNode node){
+        if (node==null) return ;
+        Queue<Node> nodes=new LinkedList<>();
+        nodes.offer(new Node("",node));
+        while (!nodes.isEmpty()){
+            int size=nodes.size();
+            for (int i=0;i<size;i++){
+                Node pollNode = nodes.poll();
+                String newPrefix=new StringBuilder().append(pollNode.prefix).append(pollNode.treeNode.val).append("->").toString();
+                if (pollNode.treeNode.left==null && pollNode.treeNode.right==null){
+                    res.add(pollNode.prefix+pollNode.treeNode.val);
+                    continue;
+                }
+                if (pollNode.treeNode.left!=null){
+                    Node newNode=new Node(newPrefix,pollNode.treeNode.left);
+                    nodes.offer(newNode);
+                }
+                if (pollNode.treeNode.right!=null){
+                    Node newNode=new Node(newPrefix,pollNode.treeNode.right);
+                    nodes.offer(newNode);
+                }
+            }
+        }
+    }
+    static class Node{
+        String prefix;
+        TreeNode treeNode;
+        public Node(){}
+        public Node(String prefix, TreeNode treeNode) {
+            this.prefix = prefix;
+            this.treeNode = treeNode;
+        }
+    }
+
+    public static void main(String[] args) {
+        TreeNode root=new TreeNode(1);
+        root.left=new TreeNode(2);
+        root.right=new TreeNode(3);
+        root.left.right=new TreeNode(5);
+        List<String> res=new ArrayList<>();
+        new BinaryTreePaths().iterator(res,root);
+        System.out.println(res);
     }
 }

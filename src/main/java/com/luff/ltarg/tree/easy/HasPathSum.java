@@ -2,6 +2,9 @@ package com.luff.ltarg.tree.easy;
 
 import com.luff.ltarg.common.TreeNode;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 /**
  * @Classname HasPathSum
  * @Description
@@ -57,5 +60,47 @@ public class HasPathSum {
 
         return recursiveResolve(node.left,sums+node.val,targetSum)
                 || recursiveResolve(node.right,sums+node.val,targetSum);
+    }
+
+    // 广度有限搜索
+    public boolean solution2(TreeNode root,int sum){
+        if (root==null){
+            return false;
+        }
+
+        SumNode sumNode=new SumNode(root,root.val);
+        LinkedList<SumNode> queue=new LinkedList<>();
+        queue.add(sumNode);
+        while (!queue.isEmpty()){
+            int size=queue.size();
+
+            for (int i=0;i<size;i++){
+                SumNode node = queue.pop();
+                if (node.node.left==null && node.node.right==null && node.sum==sum){
+                    return true;
+                }else{
+                    if (node.node.left!=null){
+                        SumNode tmp=new SumNode(node.node.left,node.sum+node.node.left.val);
+                        queue.add(tmp);
+                    }
+                    if (node.node.right!=null){
+                        SumNode tmp=new SumNode(node.node.right,node.sum+node.node.right.val);
+                        queue.add(tmp);
+                    }
+                }
+            }
+        }
+        return false;
+
+    }
+    static class SumNode{
+        public TreeNode node;
+        public  int sum;
+
+        public SumNode(TreeNode node, int sum) {
+            this.node = node;
+            this.sum = sum;
+        }
+
     }
 }
