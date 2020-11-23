@@ -1,5 +1,7 @@
 package com.luff.ltarg.array;
 
+import java.util.Set;
+
 /**
  * @author lsq
  * @date 2020/7/1
@@ -32,6 +34,7 @@ public class FindLength {
      * @return
      */
     public static int solution1(int[] A,int[] B){
+        Set<String> set;
         int res=0;
         int[][] ar=new int[A.length][B.length];
         for (int i=0;i<A.length;i++){
